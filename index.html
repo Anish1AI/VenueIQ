@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>VenueIQ | Predictive Friction Eliminator</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;family=Manrope:wght@400;600;700;800&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+
+    <!-- External CSS -->
+    <link rel="stylesheet" href="style.css" />
+
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "inverse-on-surface": "var(--color-inverse-on-surface)",
+                        "surface-container-lowest": "var(--color-surface-container-lowest)",
+                        "tertiary-container": "var(--color-tertiary-container)",
+                        "on-secondary-fixed": "var(--color-on-secondary-fixed)",
+                        "error-dim": "var(--color-error-dim)",
+                        "on-tertiary-fixed-variant": "var(--color-on-tertiary-fixed-variant)",
+                        "on-surface-variant": "var(--color-on-surface-variant)",
+                        "secondary-fixed-dim": "var(--color-secondary-fixed-dim)",
+                        "surface-container-high": "var(--color-surface-container-high)",
+                        "error-container": "var(--color-error-container)",
+                        "surface": "var(--color-surface)",
+                        "on-tertiary-container": "var(--color-on-tertiary-container)",
+                        "secondary-dim": "var(--color-secondary-dim)",
+                        "primary-fixed-dim": "var(--color-primary-fixed-dim)",
+                        "on-primary-container": "var(--color-on-primary-container)",
+                        "tertiary-fixed": "var(--color-tertiary-fixed)",
+                        "surface-container": "var(--color-surface-container)",
+                        "surface-variant": "var(--color-surface-variant)",
+                        "outline": "var(--color-outline)",
+                        "on-error": "var(--color-on-error)",
+                        "surface-bright": "var(--color-surface-bright)",
+                        "secondary-fixed": "var(--color-secondary-fixed)",
+                        "primary-dim": "var(--color-primary-dim)",
+                        "surface-container-highest": "var(--color-surface-container-highest)",
+                        "error": "var(--color-error)",
+                        "on-primary": "var(--color-on-primary)",
+                        "on-tertiary": "var(--color-on-tertiary)",
+                        "secondary-container": "var(--color-secondary-container)",
+                        "surface-dim": "var(--color-surface-dim)",
+                        "secondary": "var(--color-secondary)",
+                        "on-surface": "var(--color-on-surface)",
+                        "on-secondary-container": "var(--color-on-secondary-container)",
+                        "tertiary": "var(--color-tertiary)",
+                        "tertiary-fixed-dim": "var(--color-tertiary-fixed-dim)",
+                        "inverse-surface": "var(--color-inverse-surface)",
+                        "on-primary-fixed": "var(--color-on-primary-fixed)",
+                        "on-secondary": "var(--color-on-secondary)",
+                        "outline-variant": "var(--color-outline-variant)",
+                        "on-primary-fixed-variant": "var(--color-on-primary-fixed-variant)",
+                        "on-background": "var(--color-on-background)",
+                        "background": "var(--color-background)",
+                        "on-secondary-fixed-variant": "var(--color-on-secondary-fixed-variant)",
+                        "tertiary-dim": "var(--color-tertiary-dim)",
+                        "on-tertiary-fixed": "var(--color-on-tertiary-fixed)",
+                        "primary": "var(--color-primary)",
+                        "primary-fixed": "var(--color-primary-fixed)",
+                        "primary-container": "var(--color-primary-container)",
+                        "on-error-container": "var(--color-on-error-container)",
+                        "surface-container-low": "var(--color-surface-container-low)",
+                        "surface-tint": "var(--color-surface-tint)",
+                        "inverse-primary": "var(--color-inverse-primary)"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "fontFamily": {
+                        "headline": ["Manrope"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                },
+            },
+        }
+    </script>
+
+    <!-- Google Services Stack -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script async defer
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAOsJf4QCPvo_ZBvwhu0gYE8X3bCWzld70&libraries=visualization"></script>
+
+</head>
+
+<body class="overflow-hidden">
+    <!-- TopNavBar -->
+    <header
+        class="fixed top-0 w-full z-50 bg-white/80 dark:bg-slate-50 dark:bg-slate-950/80 backdrop-blur-xl flex justify-between items-center px-8 h-16 w-full max-w-none">
+        <div class="flex items-center gap-8">
+            <span class="text-2xl font-black tracking-tighter text-violet-400">VenueIQ</span>
+            <nav class="hidden md:flex gap-6 items-center">
+                <a class="font-manrope tracking-tight text-sm font-semibold text-slate-600 dark:text-slate-400 hover:text-emerald-400 transition-colors duration-200 active:scale-95 transition-transform"
+                    href="#">Dashboard</a>
+                <a class="font-manrope tracking-tight text-sm font-semibold text-slate-600 dark:text-slate-400 hover:text-emerald-400 transition-colors duration-200 active:scale-95 transition-transform"
+                    href="#">Spatial Hub</a>
+                <a class="font-manrope tracking-tight text-sm font-semibold text-violet-400 border-b-2 border-violet-500 pb-1 hover:text-emerald-400 transition-colors duration-200 active:scale-95 transition-transform"
+                    href="#">Assistant</a>
+            </nav>
+        </div>
+        <div class="flex items-center gap-4">
+            <button id="theme-toggle"
+                class="material-symbols-outlined text-slate-600 dark:text-slate-400 hover:text-emerald-400">dark_mode</button>
+            <button
+                class="material-symbols-outlined text-slate-600 dark:text-slate-400 hover:text-emerald-400">notifications</button>
+            <div class="w-8 h-8 rounded-full overflow-hidden border border-outline-variant">
+                <img alt="User profile"
+                    data-alt="close up professional portrait of a tech executive in a minimal studio setting with cinematic lighting"
+                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuBgAqcWm_vzEQwEAYNokTMGQqm_wBcJhwIahCm6cHtzoTRjd6Hx9iZ_mUevcTZryhASHL7RcYlnIfz_osbXcnRyolIiK6SrA7PtMjT2j7xDRyWNsi6IgFYj-NYgvLh9Vm-FwZ0NSAavUAResxFnKjpbagG9F0_jETV4M99NsVkXw4fd8f-c9nEq3b_b0sCoxPeGG2lG9Tbp-N0-bMU5lVtJzMD1Rhvq9lBK0cF4NqMrWL0m_SY4pCZZUVH9IpgmCDw7fkLybt1anas" />
+            </div>
+        </div>
+    </header>
+    <!-- SideNavBar -->
+    <aside
+        class="h-screen w-64 fixed left-0 top-0 bg-slate-50 dark:bg-slate-950 flex flex-col h-full py-6 z-40 hidden md:flex">
+        <div class="px-6 mb-10 mt-16">
+            <h2 class="text-lg font-black text-slate-900 dark:text-white">Predictive Friction Eliminator</h2>
+            <p class="font-manrope uppercase tracking-widest text-[10px] font-bold text-emerald-400">V1.0.4 - Active</p>
+        </div>
+        <nav class="flex-1 space-y-1">
+            <div
+                class="text-slate-500 dark:text-slate-400 px-4 py-3 flex items-center gap-3 hover:bg-slate-100/50 dark:bg-slate-100 dark:bg-slate-900/50 hover:text-slate-900 dark:text-white transition-all cursor-pointer active:opacity-80">
+                <span class="material-symbols-outlined">architecture</span>
+                <span class="font-manrope uppercase tracking-widest text-[10px] font-bold">Projects</span>
+            </div>
+            <div
+                class="text-slate-500 dark:text-slate-400 px-4 py-3 flex items-center gap-3 hover:bg-slate-100/50 dark:bg-slate-100 dark:bg-slate-900/50 hover:text-slate-900 dark:text-white transition-all cursor-pointer active:opacity-80">
+                <span class="material-symbols-outlined">map</span>
+                <span class="font-manrope uppercase tracking-widest text-[10px] font-bold">Spatial Intel</span>
+            </div>
+            <div
+                class="bg-slate-100 dark:bg-slate-900 text-emerald-400 border-l-4 border-emerald-400 px-4 py-3 flex items-center gap-3 cursor-pointer active:opacity-80">
+                <span class="material-symbols-outlined">auto_awesome</span>
+                <span class="font-manrope uppercase tracking-widest text-[10px] font-bold">AI Recommendations</span>
+            </div>
+            <div
+                class="text-slate-500 dark:text-slate-400 px-4 py-3 flex items-center gap-3 hover:bg-slate-100/50 dark:bg-slate-100 dark:bg-slate-900/50 hover:text-slate-900 dark:text-white transition-all cursor-pointer active:opacity-80">
+                <span class="material-symbols-outlined">analytics</span>
+                <span class="font-manrope uppercase tracking-widest text-[10px] font-bold">Reports</span>
+            </div>
+            <div
+                class="text-slate-500 dark:text-slate-400 px-4 py-3 flex items-center gap-3 hover:bg-slate-100/50 dark:bg-slate-100 dark:bg-slate-900/50 hover:text-slate-900 dark:text-white transition-all cursor-pointer active:opacity-80">
+                <span class="material-symbols-outlined">settings</span>
+                <span class="font-manrope uppercase tracking-widest text-[10px] font-bold">Settings</span>
+            </div>
+        </nav>
+        <div class="px-4 mt-auto space-y-4">
+            <button
+                class="w-full py-3 bg-emerald-400 text-slate-950 font-black rounded text-[10px] uppercase tracking-widest hover:brightness-110 active:scale-95 transition-all">
+                New Analysis
+            </button>
+            <div class="space-y-1">
+                <div
+                    class="text-slate-500 dark:text-slate-400 px-4 py-2 flex items-center gap-3 text-[10px] font-bold uppercase tracking-widest hover:text-slate-900 dark:text-white cursor-pointer">
+                    <span class="material-symbols-outlined text-sm">help</span>
+                    <span>Help</span>
+                </div>
+                <div
+                    class="text-slate-500 dark:text-slate-400 px-4 py-2 flex items-center gap-3 text-[10px] font-bold uppercase tracking-widest hover:text-slate-900 dark:text-white cursor-pointer">
+                    <span class="material-symbols-outlined text-sm">logout</span>
+                    <span>Sign Out</span>
+                </div>
+            </div>
+        </div>
+    </aside>
+    <!-- Main Content Layout -->
+    <main class="ml-0 md:ml-64 pt-16 h-screen flex flex-row overflow-hidden bg-surface">
+        <!-- Left: 70% Content Area -->
+        <div class="w-full lg:w-[70%] p-8 overflow-y-auto custom-scrollbar flex flex-col gap-8">
+            <!-- Header Section -->
+            <div class="flex flex-col gap-2">
+                <h1
+                    class="font-headline text-display-md font-extrabold tracking-tight text-slate-900 dark:text-white leading-none">
+                    Intent Prediction Layer</h1>
+                <p class="text-on-surface-variant font-body text-lg">Surfacing proactive friction alerts for your
+                    section.</p>
+            </div>
+            <!-- Bento Grid of Recommendations -->
+            <div id="recommendations-panel" class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Dynamic intent cards will be rendered here by app.js -->
+            </div>
+            <div id="bias-audit" class="mt-6"></div>
+            <!-- Spatial Intel: Wide Map Section -->
+            <section class="flex flex-col gap-4">
+                <div class="flex justify-between items-end">
+                    <div class="flex flex-col">
+                        <span class="font-label text-[10px] uppercase tracking-widest font-bold text-primary">Module
+                            02</span>
+                        <h2 class="font-headline text-headline-lg font-extrabold text-slate-900 dark:text-white">Stadium
+                            Pressure Map</h2>
+                    </div>
+                    <button
+                        class="bg-surface-container-highest text-primary font-bold px-4 py-2 rounded-lg text-xs flex items-center gap-2 hover:bg-surface-bright">
+                        <span class="material-symbols-outlined text-sm">fullscreen</span>
+                        Expand View
+                    </button>
+                </div>
+                <div class="relative w-full h-80 rounded-2xl overflow-hidden bg-surface-container-highest">
+                    <div id="map-container" class="absolute inset-0 z-0"></div>
+                    <!-- Overlay Data UI -->
+                    <div class="absolute inset-0 p-6 pointer-events-none flex flex-col justify-between">
+                        <div class="flex justify-between">
+                            <div class="glass-panel p-4 rounded-xl pointer-events-auto border-l-2 border-secondary">
+                                <p class="text-[10px] font-bold text-secondary uppercase tracking-widest mb-1">Live Zone
+                                    Monitoring</p>
+                                <p class="text-sm font-bold text-slate-900 dark:text-white">Shibuya High-Density Sector
+                                </p>
+                            </div>
+                            <div class="flex flex-col gap-2 pointer-events-auto">
+                                <div class="bg-surface-container-lowest/80 p-2 rounded-lg backdrop-blur">
+                                    <span
+                                        class="material-symbols-outlined text-slate-900 dark:text-white text-sm">layers</span>
+                                </div>
+                                <div class="bg-surface-container-lowest/80 p-2 rounded-lg backdrop-blur">
+                                    <span
+                                        class="material-symbols-outlined text-slate-900 dark:text-white text-sm">near_me</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex gap-4">
+                            <div class="glass-panel px-4 py-2 rounded-lg flex items-center gap-3">
+                                <span class="w-2 h-2 rounded-full bg-secondary"></span>
+                                <span class="text-[10px] font-bold uppercase tracking-widest">Growth Zone</span>
+                            </div>
+                            <div class="glass-panel px-4 py-2 rounded-lg flex items-center gap-3">
+                                <span class="w-2 h-2 rounded-full bg-tertiary"></span>
+                                <span class="text-[10px] font-bold uppercase tracking-widest">Congestion Risk</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+        <!-- Right: 10% AI Assistant Sidebar (Expanded for visibility) -->
+        <div class="hidden lg:flex w-[30%] bg-surface-container-low flex-col border-l border-outline-variant/10">
+            <div class="p-6 border-b border-outline-variant/10">
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="w-10 h-10 rounded-lg bg-primary-container flex items-center justify-center">
+                        <span class="material-symbols-outlined text-on-primary-container"
+                            style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+                    </div>
+                    <div>
+                        <p class="font-bold text-slate-900 dark:text-white leading-none">VenueIQ Assistant</p>
+                        <p class="text-[10px] text-emerald-400 font-bold uppercase tracking-widest">Online &amp;
+                            Processing</p>
+                    </div>
+                </div>
+                <div id="chat-messages" class="space-y-4 max-h-80 overflow-y-auto custom-scrollbar pr-2 pb-2">
+                    <div class="bg-surface-container-highest p-4 rounded-xl">
+                        <p class="text-xs text-on-surface leading-relaxed italic">"I've analyzed the new spatial data.
+                            The proposed greenery in the North Sector will reduce thermal load by an additional 4%."</p>
+                    </div>
+                    <div class="flex gap-2">
+                        <div
+                            class="quick-action-btn cursor-pointer px-3 py-1 bg-surface-container rounded-full text-[10px] font-bold text-primary-dim border border-primary-dim/20 hover:bg-surface-container-high transition-colors">
+                            Ask about load</div>
+                        <div
+                            class="quick-action-btn cursor-pointer px-3 py-1 bg-surface-container rounded-full text-[10px] font-bold text-primary-dim border border-primary-dim/20 hover:bg-surface-container-high transition-colors">
+                            Material list</div>
+                    </div>
+                </div>
+            </div>
+            <!-- Task List / Activity -->
+            <div class="flex-1 overflow-y-auto p-6 custom-scrollbar">
+                <h4 class="text-[10px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-6">
+                    Live Intents</h4>
+                <div class="space-y-6">
+                    <div class="flex gap-4">
+                        <div class="w-1 h-12 bg-tertiary rounded-full"></div>
+                        <div class="flex flex-col">
+                            <p class="text-xs font-bold text-slate-900 dark:text-white">Simulation Completed</p>
+                            <p class="text-[10px] text-on-surface-variant">Atrium Stress Test (A-402)</p>
+                            <p class="text-[10px] text-tertiary mt-1">3 mins ago</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-4">
+                        <div class="w-1 h-12 bg-secondary rounded-full"></div>
+                        <div class="flex flex-col">
+                            <p class="text-xs font-bold text-slate-900 dark:text-white">Model Updated</p>
+                            <p class="text-[10px] text-on-surface-variant">Foundation specs revised</p>
+                            <p class="text-[10px] text-secondary mt-1">1 hour ago</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-4">
+                        <div class="w-1 h-12 bg-primary rounded-full"></div>
+                        <div class="flex flex-col">
+                            <p class="text-xs font-bold text-slate-900 dark:text-white">Stakeholder Review</p>
+                            <p class="text-[10px] text-on-surface-variant">Feedback added by Sarah J.</p>
+                            <p class="text-[10px] text-primary mt-1">4 hours ago</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Input area -->
+            <div class="p-6">
+                <div
+                    class="bg-surface-container-high rounded-xl p-3 flex items-center gap-3 border border-outline-variant/20 focus-within:border-secondary transition-colors">
+                    <input id="chat-input"
+                        class="bg-transparent border-none focus:ring-0 text-sm text-on-surface flex-1 placeholder:text-on-surface-variant/50"
+                        placeholder="Ask VenueIQ..." type="text" />
+                    <button id="chat-send-btn"
+                        class="material-symbols-outlined text-secondary hover:brightness-110 active:scale-95 transition-all">send</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/sw.js').then(reg => {
+                reg.addEventListener('updatefound', () => {
+                    const newWorker = reg.installing;
+                    newWorker.addEventListener('statechange', () => {
+                        if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                            window.location.reload();
+                        }
+                    });
+                });
+            });
+
+            let refreshing = false;
+            navigator.serviceWorker.addEventListener('controllerchange', () => {
+                if (!refreshing) {
+                    window.location.reload();
+                    refreshing = true;
+                }
+            });
+        }
+
+        const themeToggleBtn = document.getElementById('theme-toggle');
+        if (themeToggleBtn) {
+            themeToggleBtn.addEventListener('click', function () {
+                const htmlEl = document.documentElement;
+                if (htmlEl.classList.contains('dark')) {
+                    htmlEl.classList.remove('dark');
+                    localStorage.theme = 'light';
+                    themeToggleBtn.textContent = 'light_mode';
+                } else {
+                    htmlEl.classList.add('dark');
+                    localStorage.theme = 'dark';
+                    themeToggleBtn.textContent = 'dark_mode';
+                }
+            });
+
+            if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark');
+                themeToggleBtn.textContent = 'dark_mode';
+            } else {
+                document.documentElement.classList.remove('dark');
+                themeToggleBtn.textContent = 'light_mode';
+            }
+        }
+    </script>
+
+    <!-- Core App Logic -->
+    <script type="module" src="firebase-config.js"></script>
+    <script type="module" src="app.js"></script>
+
+</body>
+
+</html>

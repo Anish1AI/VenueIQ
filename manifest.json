@@ -1,0 +1,9 @@
+{
+  "name": "VenueIQ — Stadium AI Assistant",
+  "short_name": "VenueIQ",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0d0d12",
+  "theme_color": "#0d0d12",
+  "icons": []
+}
