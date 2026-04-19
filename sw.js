@@ -1,4 +1,4 @@
-const CACHE_NAME = 'venueiq-v22';
+const CACHE_NAME = 'venueiq-v23';
 const STATIC_ASSETS = [
   '/',
   '/index.html',

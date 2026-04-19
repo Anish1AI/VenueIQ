@@ -5,13 +5,16 @@
 <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <meta name="description" content="VenueIQ predicts crowd movement and routes stadium fans to optimal amenities before congestion occurs using Firebase and Gemini AI." />
+    <meta name="theme-color" content="#7c3aed" />
+    <meta property="og:title" content="VenueIQ | Predictive Friction Eliminator" />
+    <meta property="og:description" content="Anticipatory AI for smarter stadium crowd management." />
+    <meta property="og:type" content="website" />
     <title>VenueIQ | Predictive Friction Eliminator</title>
+    <link rel="manifest" href="/manifest.json" />
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link
         href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;family=Manrope:wght@400;600;700;800&amp;display=swap"
-        rel="stylesheet" />
-    <link
-        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
         rel="stylesheet" />
     <link
         href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
@@ -104,89 +107,92 @@
 </head>
 
 <body class="overflow-hidden">
+    <!-- Skip Navigation (Accessibility) -->
+    <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-[100] focus:bg-violet-600 focus:text-white focus:px-4 focus:py-2 focus:rounded focus:font-bold">Skip to main content</a>
     <!-- TopNavBar -->
-    <header
+    <header role="banner"
         class="fixed top-0 w-full z-50 bg-white/80 dark:bg-slate-50 dark:bg-slate-950/80 backdrop-blur-xl flex justify-between items-center px-8 h-16 w-full max-w-none">
         <div class="flex items-center gap-8">
-            <span class="text-2xl font-black tracking-tighter text-violet-400">VenueIQ</span>
-            <nav class="hidden md:flex gap-6 items-center">
+            <span class="text-2xl font-black tracking-tighter text-violet-400" aria-label="VenueIQ home">VenueIQ</span>
+            <nav class="hidden md:flex gap-6 items-center" aria-label="Main navigation">
                 <a class="font-manrope tracking-tight text-sm font-semibold text-slate-600 dark:text-slate-400 hover:text-emerald-400 transition-colors duration-200 active:scale-95 transition-transform"
-                    href="#">Dashboard</a>
+                    href="#" aria-label="Dashboard">Dashboard</a>
                 <a class="font-manrope tracking-tight text-sm font-semibold text-slate-600 dark:text-slate-400 hover:text-emerald-400 transition-colors duration-200 active:scale-95 transition-transform"
-                    href="#">Spatial Hub</a>
+                    href="#" aria-label="Spatial Hub">Spatial Hub</a>
                 <a class="font-manrope tracking-tight text-sm font-semibold text-violet-400 border-b-2 border-violet-500 pb-1 hover:text-emerald-400 transition-colors duration-200 active:scale-95 transition-transform"
-                    href="#">Assistant</a>
+                    href="#" aria-current="page" aria-label="AI Assistant (current page)">Assistant</a>
             </nav>
         </div>
         <div class="flex items-center gap-4">
-            <button id="theme-toggle"
+            <button id="theme-toggle" aria-label="Toggle dark mode"
                 class="material-symbols-outlined text-slate-600 dark:text-slate-400 hover:text-emerald-400">dark_mode</button>
-            <button
+            <button aria-label="Notifications"
                 class="material-symbols-outlined text-slate-600 dark:text-slate-400 hover:text-emerald-400">notifications</button>
             <div class="w-8 h-8 rounded-full overflow-hidden border border-outline-variant">
-                <img alt="User profile"
-                    data-alt="close up professional portrait of a tech executive in a minimal studio setting with cinematic lighting"
-                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuBgAqcWm_vzEQwEAYNokTMGQqm_wBcJhwIahCm6cHtzoTRjd6Hx9iZ_mUevcTZryhASHL7RcYlnIfz_osbXcnRyolIiK6SrA7PtMjT2j7xDRyWNsi6IgFYj-NYgvLh9Vm-FwZ0NSAavUAResxFnKjpbagG9F0_jETV4M99NsVkXw4fd8f-c9nEq3b_b0sCoxPeGG2lG9Tbp-N0-bMU5lVtJzMD1Rhvq9lBK0cF4NqMrWL0m_SY4pCZZUVH9IpgmCDw7fkLybt1anas" />
+                <img alt="User profile picture"
+                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuBgAqcWm_vzEQwEAYNokTMGQqm_wBcJhwIahCm6cHtzoTRjd6Hx9iZ_mUevcTZryhASHL7RcYlnIfz_osbXcnRyolIiK6SrA7PtMjT2j7xDRyWNsi6IgFYj-NYgvLh9Vm-FwZ0NSAavUAResxFnKjpbagG9F0_jETV4M99NsVkXw4fd8f-c9nEq3b_b0sCoxPeGG2lG9Tbp-N0-bMU5lVtJzMD1Rhvq9lBK0cF4NqMrWL0m_SY4pCZZUVH9IpgmCDw7fkLybt1anas"
+                    width="32" height="32" loading="lazy" />
             </div>
         </div>
     </header>
-    <!-- Alert Banner -->
-    <div id="alert-banner" class="fixed top-16 left-64 right-0 z-40 bg-tertiary text-on-tertiary text-xs font-bold px-6 py-3 hidden transition-all" style="display:none"></div>
+    <!-- Alert Banner (aria-live for screen readers) -->
+    <div id="alert-banner" role="alert" aria-live="assertive" aria-atomic="true"
+        class="fixed top-16 left-64 right-0 z-40 bg-tertiary text-on-tertiary text-xs font-bold px-6 py-3 transition-all" style="display:none"></div>
     <!-- SideNavBar -->
-    <aside
+    <aside role="navigation" aria-label="Application sidebar"
         class="h-screen w-64 fixed left-0 top-0 bg-slate-50 dark:bg-slate-950 flex flex-col h-full py-6 z-40 hidden md:flex">
         <div class="px-6 mb-10 mt-16">
             <h2 class="text-lg font-black text-slate-900 dark:text-white">Predictive Friction Eliminator</h2>
             <p class="font-manrope uppercase tracking-widest text-[10px] font-bold text-emerald-400">V1.0.4 - Active</p>
         </div>
-        <nav class="flex-1 space-y-1">
-            <div
+        <nav class="flex-1 space-y-1" aria-label="Sidebar navigation">
+            <div role="button" tabindex="0"
                 class="text-slate-500 dark:text-slate-400 px-4 py-3 flex items-center gap-3 hover:bg-slate-100/50 dark:bg-slate-100 dark:bg-slate-900/50 hover:text-slate-900 dark:text-white transition-all cursor-pointer active:opacity-80">
-                <span class="material-symbols-outlined">architecture</span>
+                <span class="material-symbols-outlined" aria-hidden="true">architecture</span>
                 <span class="font-manrope uppercase tracking-widest text-[10px] font-bold">Projects</span>
             </div>
-            <div
+            <div role="button" tabindex="0"
                 class="text-slate-500 dark:text-slate-400 px-4 py-3 flex items-center gap-3 hover:bg-slate-100/50 dark:bg-slate-100 dark:bg-slate-900/50 hover:text-slate-900 dark:text-white transition-all cursor-pointer active:opacity-80">
-                <span class="material-symbols-outlined">map</span>
+                <span class="material-symbols-outlined" aria-hidden="true">map</span>
                 <span class="font-manrope uppercase tracking-widest text-[10px] font-bold">Spatial Intel</span>
             </div>
-            <div
+            <div role="button" tabindex="0" aria-current="page"
                 class="bg-slate-100 dark:bg-slate-900 text-emerald-400 border-l-4 border-emerald-400 px-4 py-3 flex items-center gap-3 cursor-pointer active:opacity-80">
-                <span class="material-symbols-outlined">auto_awesome</span>
+                <span class="material-symbols-outlined" aria-hidden="true">auto_awesome</span>
                 <span class="font-manrope uppercase tracking-widest text-[10px] font-bold">AI Recommendations</span>
             </div>
-            <div
+            <div role="button" tabindex="0"
                 class="text-slate-500 dark:text-slate-400 px-4 py-3 flex items-center gap-3 hover:bg-slate-100/50 dark:bg-slate-100 dark:bg-slate-900/50 hover:text-slate-900 dark:text-white transition-all cursor-pointer active:opacity-80">
-                <span class="material-symbols-outlined">analytics</span>
+                <span class="material-symbols-outlined" aria-hidden="true">analytics</span>
                 <span class="font-manrope uppercase tracking-widest text-[10px] font-bold">Reports</span>
             </div>
-            <div
+            <div role="button" tabindex="0"
                 class="text-slate-500 dark:text-slate-400 px-4 py-3 flex items-center gap-3 hover:bg-slate-100/50 dark:bg-slate-100 dark:bg-slate-900/50 hover:text-slate-900 dark:text-white transition-all cursor-pointer active:opacity-80">
-                <span class="material-symbols-outlined">settings</span>
+                <span class="material-symbols-outlined" aria-hidden="true">settings</span>
                 <span class="font-manrope uppercase tracking-widest text-[10px] font-bold">Settings</span>
             </div>
         </nav>
         <div class="px-4 mt-auto space-y-4">
-            <button
+            <button aria-label="Start new analysis"
                 class="w-full py-3 bg-emerald-400 text-slate-950 font-black rounded text-[10px] uppercase tracking-widest hover:brightness-110 active:scale-95 transition-all">
                 New Analysis
             </button>
             <div class="space-y-1">
-                <div
+                <div role="button" tabindex="0"
                     class="text-slate-500 dark:text-slate-400 px-4 py-2 flex items-center gap-3 text-[10px] font-bold uppercase tracking-widest hover:text-slate-900 dark:text-white cursor-pointer">
-                    <span class="material-symbols-outlined text-sm">help</span>
+                    <span class="material-symbols-outlined text-sm" aria-hidden="true">help</span>
                     <span>Help</span>
                 </div>
-                <div
+                <div role="button" tabindex="0"
                     class="text-slate-500 dark:text-slate-400 px-4 py-2 flex items-center gap-3 text-[10px] font-bold uppercase tracking-widest hover:text-slate-900 dark:text-white cursor-pointer">
-                    <span class="material-symbols-outlined text-sm">logout</span>
+                    <span class="material-symbols-outlined text-sm" aria-hidden="true">logout</span>
                     <span>Sign Out</span>
                 </div>
             </div>
         </div>
     </aside>
     <!-- Main Content Layout -->
-    <main class="ml-0 md:ml-64 pt-16 h-screen flex flex-row overflow-hidden bg-surface">
+    <main id="main-content" role="main" aria-label="Stadium AI recommendations" class="ml-0 md:ml-64 pt-16 h-screen flex flex-row overflow-hidden bg-surface">
         <!-- Left: 70% Content Area -->
         <div class="w-full lg:w-[70%] p-8 overflow-y-auto custom-scrollbar flex flex-col gap-8">
             <!-- Header Section -->
@@ -198,7 +204,7 @@
                     section.</p>
             </div>
             <!-- Bento Grid of Recommendations -->
-            <div id="recommendations-panel" class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div id="recommendations-panel" role="region" aria-label="AI recommendations" aria-live="polite" class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <!-- Dynamic intent cards will be rendered here by app.js -->
             </div>
             <!-- Intent Prediction Layer -->
@@ -357,10 +363,11 @@
             <div class="p-6">
                 <div
                     class="bg-surface-container-high rounded-xl p-3 flex items-center gap-3 border border-outline-variant/20 focus-within:border-secondary transition-colors">
-                    <input id="chat-input"
+                    <label for="chat-input" class="sr-only">Ask VenueIQ a question</label>
+                    <input id="chat-input" aria-label="Ask VenueIQ a question"
                         class="bg-transparent border-none focus:ring-0 text-sm text-on-surface flex-1 placeholder:text-on-surface-variant/50"
-                        placeholder="Ask VenueIQ..." type="text" />
-                    <button id="chat-send-btn"
+                        placeholder="Ask VenueIQ..." type="text" autocomplete="off" />
+                    <button id="chat-send-btn" aria-label="Send message"
                         class="material-symbols-outlined text-secondary hover:brightness-110 active:scale-95 transition-all">send</button>
                 </div>
             </div>
