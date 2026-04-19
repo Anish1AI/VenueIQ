@@ -41,7 +41,7 @@ const reportRateLimits = {};
 
 async function initializeApp() {
   console.log("VenueIQ Initializing...");
-  
+
   // Try Auth, but fallback gracefully if keys are placeholders
   try {
     const userCredential = await auth.signInAnonymously();
@@ -53,14 +53,14 @@ async function initializeApp() {
   }
 
   loadOrPromptUserContext();
-  
+
   try {
     assistant = new VenueAssistant(userContext, db);
     subscribeToLivePressure();
   } catch (err) {
     console.warn("Firebase DB bypassed. Operating in full simulation mode.");
     assistant = new VenueAssistant(userContext, null);
-    
+
     // Fallback: manually generate simulation data
     const phase = simulator.getPhase(new Date());
     livePressureData = simulator.simulatePressure(phase);
@@ -70,9 +70,9 @@ async function initializeApp() {
   updatePhaseUI();
   renderRecommendations();
   renderBiasAudit();
-  
+
   if (typeof renderIntentPrediction === 'function') {
-      renderIntentPrediction();
+    renderIntentPrediction();
   }
 
   setInterval(() => {
@@ -95,7 +95,7 @@ async function initializeApp() {
 
 function loadOrPromptUserContext() {
   const storedContext = localStorage.getItem('venueiq_user_context');
-  
+
   if (storedContext) {
     try {
       userContext = JSON.parse(storedContext);
@@ -104,7 +104,7 @@ function loadOrPromptUserContext() {
       console.error('Failed to parse stored context', e);
     }
   }
-  
+
   // Prompt user for context if not found
   const seatSection = prompt("Welcome to VenueIQ! What is your seat section? (e.g., '104')") || '101';
   const groupSizeStr = prompt("How many people are in your group?") || '1';
@@ -123,7 +123,7 @@ function loadOrPromptUserContext() {
 
 function subscribeToLivePressure() {
   const pressureRef = db.ref('/venue/pressureUpdates');
-  
+
   pressureRef.on('value', (snapshot) => {
     const gameStartTime = new Date(); // Mock game start time
     const phase = simulator.getPhase(gameStartTime);
@@ -165,14 +165,14 @@ export async function submitCrowdReport(nodeId, reportType) {
   const now = Date.now();
   const lastReportTime = reportRateLimits[nodeId];
   const FIVE_MINUTES_MS = 5 * 60 * 1000;
-  
+
   if (lastReportTime && (now - lastReportTime) < FIVE_MINUTES_MS) {
     console.warn(`Rate limit exceeded for node ${nodeId}. Please wait 5 minutes.`);
     return;
   }
 
   const reportRef = db.ref(`/venue/reports/${nodeId}`).push();
-  
+
   const reportData = {
     uid: currentUser.uid,
     reportType: reportType,
@@ -259,7 +259,7 @@ function initializeMap() {
 function updateHeatmap() {
   if (!heatmap) return;
   const heatData = [];
-  
+
   StadiumSimulator.stadiumData.forEach(node => {
     const pressure = livePressureData[node.id] || 0;
     if (pressure > 0) {
@@ -269,7 +269,7 @@ function updateHeatmap() {
       });
     }
   });
-  
+
   heatmap.setData(heatData);
 }
 
@@ -278,7 +278,7 @@ function updateHeatmap() {
  */
 export function drawRoute(fromSection, toNodeId) {
   if (!map) return;
-  
+
   // Clear previous route
   if (activeRoute) {
     activeRoute.setMap(null);
@@ -286,11 +286,11 @@ export function drawRoute(fromSection, toNodeId) {
 
   const startCoord = sectionCoordinates[fromSection] || sectionCoordinates['default'];
   const node = StadiumSimulator.stadiumData.find(n => n.id === toNodeId);
-  
+
   if (!node) return;
 
   const pressure = livePressureData[toNodeId] || 0.5;
-  
+
   // Determine color based on pressure: green/amber/red
   let strokeColor = '#4CAF50'; // Green
   if (pressure > 0.7) strokeColor = '#F44336'; // Red
@@ -332,10 +332,11 @@ function renderRecommendations() {
   // Render the Priority Card (Proactive Halftime Alert)
   const priorityNode = topRecommendations[0] || ranked[0];
   if (priorityNode) {
-    const pData = StadiumSimulator.stadiumData.find(n => n.id === priorityNode.id);
+    const pData = StadiumSimulator.stadiumData.find(n => n.id === priorityNode.id)
+      || { id: priorityNode.id, name: 'Hot Dog Stand North', type: 'concession' };
     const pWalk = Math.floor(Math.random() * 3) + 2;
     const pPressure = priorityNode.pressure;
-    
+
     // Proactive copy as requested by the user
     let alertCopy = `Halftime is in 4 minutes. Based on your section (${userContext.seat_section}) and group size (${userContext.group_size}), the least congested restroom route closes in 2 minutes. Your nearest food stand will have a 14-minute wait by the time you arrive if you leave after the buzzer.`;
 
@@ -352,7 +353,7 @@ function renderRecommendations() {
       <div class="flex flex-col gap-6 relative z-10">
         <div class="flex items-center gap-2">
           <span class="w-2 h-2 rounded-full bg-tertiary animate-pulse"></span>
-          <span class="font-label text-[10px] uppercase tracking-[0.2em] font-bold text-tertiary">Proactive Alert • ${(pPressure*100).toFixed(0)}% Load</span>
+          <span class="font-label text-[10px] uppercase tracking-[0.2em] font-bold text-tertiary">Proactive Alert • ${(pPressure * 100).toFixed(0)}% Load</span>
         </div>
         <h3 class="font-headline text-headline-lg font-bold text-on-surface">Predictive Friction Detected</h3>
         <p class="text-on-surface-variant max-w-lg">${alertCopy}</p>
@@ -372,10 +373,12 @@ function renderRecommendations() {
   const secondaryNode = topRecommendations[1] || ranked[1];
   if (secondaryNode) {
     const sData = StadiumSimulator.stadiumData.find(n => n.id === secondaryNode.id);
+    if (!sData) return; // node not in stadium data, skip
     const sWalk = Math.floor(Math.random() * 5) + 3;
     const sPressure = secondaryNode.pressure;
     
-    let whyExplanation = assistant.buildExplanation(secondaryNode, ranked[2], null);
+    const altNode = ranked[2] || ranked[0]; // fallback to top node if no 3rd
+    let whyExplanation = assistant.buildExplanation(secondaryNode, altNode, null);
 
     const sCard = document.createElement('div');
     sCard.className = 'bg-surface-container rounded-xl p-6 hover:bg-surface-container-high transition-all cursor-pointer flex flex-col justify-between border-l-2 border-primary';
@@ -388,10 +391,10 @@ function renderRecommendations() {
         <div class="mt-4 flex flex-col gap-1">
            <div class="flex justify-between text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">
              <span>Pressure</span>
-             <span>${(sPressure*100).toFixed(0)}%</span>
+             <span>${(sPressure * 100).toFixed(0)}%</span>
            </div>
            <div class="h-1 bg-surface-container-highest rounded-full overflow-hidden">
-             <div class="h-full bg-primary" style="width: ${sPressure*100}%"></div>
+             <div class="h-full bg-primary" style="width: ${sPressure * 100}%"></div>
            </div>
         </div>
 
@@ -420,7 +423,7 @@ function renderBiasAudit() {
   const nodes = Object.keys(counts);
   let topNode = 'Awaiting Data';
   let maxCount = 0;
-  
+
   if (nodes.length > 0) {
     topNode = StadiumSimulator.stadiumData.find(n => n.id === nodes[0])?.name || nodes[0];
     maxCount = counts[nodes[0]];
@@ -448,7 +451,7 @@ function renderBiasAudit() {
 function updatePhaseUI() {
   const gameStartTime = new Date(); // Mocking game start
   const phase = simulator.getPhase(gameStartTime);
-  
+
   const phaseTextEl = document.getElementById('current-phase-text');
   if (phaseTextEl) {
     const phaseNames = {
@@ -466,11 +469,11 @@ function updatePhaseUI() {
   const banner = document.getElementById('alert-banner');
   if (alert && banner) {
     banner.innerHTML = `<span aria-hidden="true">⚠️</span> ${alert.message}`;
-    banner.classList.add('show');
-    
+    banner.style.display = 'block';
+
     // Auto hide after 10s
     setTimeout(() => {
-      banner.classList.remove('show');
+      banner.style.display = 'none';
     }, 10000);
   }
 }
@@ -479,7 +482,7 @@ function setupChatUI() {
   const sendBtn = document.getElementById('chat-send-btn');
   const inputEl = document.getElementById('chat-input');
   const quickActionBtns = document.querySelectorAll('.quick-action-btn');
-  
+
   if (!sendBtn || !inputEl) return;
 
   const handleSend = () => {
@@ -508,7 +511,6 @@ function setupChatUI() {
 // ==========================================
 
 const GEMINI_API_KEY = "YOUR_GEMINI_API_KEY";
-
 /**
  * 6. Ask the Gemini Assistant with context-enriched prompt
  * @param {string} userMessage - The user's input message
@@ -522,7 +524,7 @@ export async function askAssistant(userMessage) {
 
   // 2. Display typing indicator
   const typingIndicator = document.createElement('div');
-    typingIndicator.className = 'flex gap-3';
+  typingIndicator.className = 'flex gap-3';
   typingIndicator.innerHTML = `
     <div class="w-8 h-8 rounded-lg bg-surface-container-highest flex items-center justify-center shrink-0">
       <span class="material-symbols-outlined text-primary text-sm animate-spin">sync</span>
@@ -537,23 +539,23 @@ export async function askAssistant(userMessage) {
   // 3. Build context-enriched prompt string
   const gameStartTime = new Date(); // Mocking game start to now for simulation
   const phase = simulator.getPhase(gameStartTime);
-  
+
   // Mock time to next phase (e.g., 15 mins left)
   const minutesToNextPhase = 15;
   const timeSinceLastAction = 600000; // Mock 10 mins
 
   // Get section pattern (mocking empty reports for now)
   const sectionPattern = getSectionPattern(userContext.seat_section, []);
-  
+
   // Get intent predictions
   const intentPredictions = predictIntent(userContext, phase, timeSinceLastAction, sectionPattern);
 
   const contextPrompt = buildGeminiPrompt(
-    userMessage, 
-    userContext, 
-    phase, 
-    livePressureData, 
-    intentPredictions, 
+    userMessage,
+    userContext,
+    phase,
+    livePressureData,
+    intentPredictions,
     minutesToNextPhase
   );
 
@@ -606,9 +608,9 @@ function appendMessage(text, sender) {
   if (!chatContainer) return;
 
   const msgDiv = document.createElement('div');
-  
+
   const safeText = text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/\\n/g, '<br>');
-  
+
   if (sender === 'user') {
     msgDiv.className = 'flex gap-3 justify-end';
     msgDiv.innerHTML = `
@@ -632,11 +634,11 @@ function appendMessage(text, sender) {
   chatContainer.scrollTop = chatContainer.scrollHeight;
 }
 
-function buildGeminiPrompt(userMessage, userContext, phase, 
-                            pressureMap, intentPredictions, 
-                            minutesToPhaseChange) {
+function buildGeminiPrompt(userMessage, userContext, phase,
+  pressureMap, intentPredictions,
+  minutesToPhaseChange) {
   const topIntent = intentPredictions[0] || { intent: 'unknown', probability: 0 };
-  const top3      = intentPredictions.slice(0,3)
+  const top3 = intentPredictions.slice(0, 3)
     .map(p => `${p.intent}(${p.probability}%)`)
     .join(', ');
 
@@ -652,10 +654,10 @@ CURRENT CONTEXT:
 
 LIVE PRESSURE (0.0 = empty, 1.0 = overcrowded):
 ${Object.entries(pressureMap)
-  .sort(([,a],[,b]) => b - a)
-  .slice(0, 4)
-  .map(([id, score]) => `  • ${id}: ${(score*100).toFixed(0)}% pressure`)
-  .join('\n')}
+      .sort(([, a], [, b]) => b - a)
+      .slice(0, 4)
+      .map(([id, score]) => `  • ${id}: ${(score * 100).toFixed(0)}% pressure`)
+      .join('\n')}
 
 USER'S QUESTION: "${userMessage}"
 
@@ -673,7 +675,7 @@ function renderIntentPrediction() {
   if (!container || !userContext) return;
 
   const phase = simulator.getPhase(new Date());
-  
+
   // The psychological algorithm
   let restroomProb = 30;
   let foodProb = 40;
@@ -714,7 +716,7 @@ function renderIntentPrediction() {
       <p class="text-xs font-bold text-primary mb-3">You're likely to:</p>
       <div class="flex flex-col gap-2">
   `;
-  
+
   intents.forEach(intent => {
     html += `
       <div class="flex items-center justify-between">
